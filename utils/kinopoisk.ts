@@ -185,27 +185,6 @@ export async function fetchVotesList(
   onProgress: (itemCount: number, total: number) => void,
   signal: AbortSignal
 ) {
-  // The "оценки / просмотры" select of the page saves its value in these two
-  // bits of the `hideBlocks` cookie before it loads the list, so we do the same.
-  const cookie = await browser.cookies.get({
-    url: 'https://www.kinopoisk.ru/',
-    name: 'hideBlocks',
-  })
-  let viewMode = Number(cookie?.value ?? 0) | 131072
-  if (list === 'novote') {
-    viewMode = viewMode | 262144
-  } else {
-    viewMode = viewMode & ~262144
-  }
-  await browser.cookies.set({
-    url: 'https://www.kinopoisk.ru/',
-    name: 'hideBlocks',
-    value: String(viewMode),
-    domain: '.kinopoisk.ru',
-    path: '/',
-    expirationDate: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60,
-  })
-
   return fetchList(
     // 200 titles a page, the largest page size the site offers.
     (page) =>

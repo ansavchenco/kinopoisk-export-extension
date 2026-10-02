@@ -8,7 +8,6 @@ export default defineConfig({
     name: 'Kinopoisk export',
     // With no popup, the manifest needs an empty `action` to show the toolbar icon.
     action: {},
-    permissions: ['cookies'],
     host_permissions: ['https://*.kinopoisk.ru/*', 'https://query.wikidata.org/*'],
   },
   webExt: {
