@@ -25,16 +25,6 @@ type ParsedPage<T> = {
 /** `vote` is the list of ratings ("оценки"), `novote` the list of watched titles ("просмотры"). */
 type VotesList = 'vote' | 'novote'
 
-/** Kinopoisk returned a page that is not the one we asked for. `html` is that page. */
-export class UnexpectedPageError extends Error {
-  html: string
-
-  constructor(message: string, html: string) {
-    super(message)
-    this.html = html
-  }
-}
-
 const REQUEST_DELAY_MS = 1500
 
 /** Parses one page of a Kinopoisk folder, like "Буду смотреть". */
@@ -217,16 +207,13 @@ export async function fetchVotesList(
     (html) => {
       const parsed = parseVotesPage(html)
       if (parsed == null) {
-        throw new UnexpectedPageError(`The "${list}" page has no table of titles.`, html)
+        throw new Error(`The "${list}" page has no table of titles.`)
       }
       if (parsed.list != null && parsed.list !== list) {
-        throw new UnexpectedPageError(
-          `Kinopoisk returned the "${parsed.list}" list for the "${list}" list.`,
-          html
-        )
+        throw new Error(`Kinopoisk returned the "${parsed.list}" list for the "${list}" list.`)
       }
       if (list === 'vote' && parsed.items.some((item) => item.rating == null)) {
-        throw new UnexpectedPageError('The ratings page has titles with no rating.', html)
+        throw new Error('The ratings page has titles with no rating.')
       }
       return parsed
     },

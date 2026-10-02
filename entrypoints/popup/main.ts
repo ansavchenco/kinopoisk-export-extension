@@ -1,11 +1,5 @@
 import type { KinopoiskTitle } from '@/utils/kinopoisk'
-import {
-  fetchList,
-  fetchUserId,
-  fetchVotesList,
-  parseFolderPage,
-  UnexpectedPageError,
-} from '@/utils/kinopoisk'
+import { fetchList, fetchUserId, fetchVotesList, parseFolderPage } from '@/utils/kinopoisk'
 import type { TmdbIds } from '@/utils/wikidata'
 import { fetchTmdbIds, fetchTmdbIdsByTitle } from '@/utils/wikidata'
 import './style.css'
@@ -102,12 +96,7 @@ async function exportLibrary() {
       `Exported ${library.ratings.length} ratings, ${library.seen.length} seen titles and ${library.watchlist.length} watch later titles. ${withoutTmdbId} titles have no TMDB ID.`
     )
   } catch (error) {
-    if (error instanceof UnexpectedPageError) {
-      downloadFile('kinopoisk-unexpected-page.html', error.html, 'text/html')
-      setStatus(`${error.message} The page is saved as kinopoisk-unexpected-page.html.`)
-    } else {
-      setStatus(error instanceof Error ? error.message : String(error))
-    }
+    setStatus(error instanceof Error ? error.message : String(error))
   }
   exportButton.disabled = false
 }
