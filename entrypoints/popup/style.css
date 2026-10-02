@@ -1,0 +1,30 @@
+:root {
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  width: 320px;
+}
+
+main {
+  padding: 16px;
+}
+
+h1 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+
+button {
+  padding: 8px 12px;
+  font: inherit;
+  cursor: pointer;
+}
+
+p {
+  margin: 12px 0 0;
+}
