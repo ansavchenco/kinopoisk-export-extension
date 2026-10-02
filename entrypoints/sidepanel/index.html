@@ -1,48 +1,99 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scheme-light-dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kinopoisk export</title>
   </head>
-  <body>
-    <main data-view="ready">
-      <h1 id="heading">Kinopoisk export</h1>
-      <p id="lead" class="secondary">Saves your library to a JSON file. Takes a few minutes.</p>
-      <p id="error" data-show="error"></p>
+  <!--
+    Chrome adds `body { font-size: 75% }` and a font to an extension page. That rule is in no
+    layer, so it beats Tailwind's layered utilities unless they are important.
+  -->
+  <body class="font-sans! text-sm! text-neutral-900 dark:text-neutral-100">
+    <!-- An element shows only in the views its `group-data-[view=…]` classes name. -->
+    <main data-view="ready" class="group flex min-h-screen flex-col gap-3 p-4">
+      <h1 id="heading" class="text-lg font-semibold">Kinopoisk export</h1>
+      <p id="lead" class="text-neutral-500 dark:text-neutral-400">Saves your library to a JSON file. Takes a few minutes.</p>
+      <p
+        id="account"
+        class="hidden gap-2 rounded-lg px-3 py-2.5 group-data-[view=ready]:flex bg-neutral-100 dark:bg-neutral-800 data-[state=failed]:bg-red-50 data-[state=failed]:text-red-700 dark:data-[state=failed]:bg-red-950 dark:data-[state=failed]:text-red-300"
+      >
+        <span class="mt-px shrink-0 [&>svg]:size-4.5 in-data-[state=active]:text-blue-600 in-data-[state=done]:text-green-600 in-data-[state=failed]:text-red-700 dark:in-data-[state=active]:text-blue-400 dark:in-data-[state=done]:text-green-400 dark:in-data-[state=failed]:text-red-300 in-data-[state=active]:[&>svg]:animate-spin" data-mark></span>
+        <span id="account-text"></span>
+      </p>
+      <p id="error" class="hidden rounded-lg px-3 py-2.5 group-data-[view=error]:block bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300"></p>
 
-      <ul class="rows" data-show="ready">
-        <li>Ratings</li>
-        <li>Watched titles</li>
-        <li>Watch later</li>
+      <ul class="hidden group-data-[view=ready]:block">
+        <li class="flex items-center gap-2 border-t border-neutral-200 py-2 dark:border-neutral-700"><span class="shrink-0 [&>svg]:size-4.5" data-icon="star"></span>Ratings</li>
+        <li class="flex items-center gap-2 border-t border-neutral-200 py-2 dark:border-neutral-700"><span class="shrink-0 [&>svg]:size-4.5" data-icon="eye"></span>Watched titles</li>
+        <li class="flex items-center gap-2 border-t border-neutral-200 py-2 dark:border-neutral-700"><span class="shrink-0 [&>svg]:size-4.5" data-icon="clock"></span>Watch later</li>
       </ul>
 
-      <ul id="steps" class="rows" data-show="running error">
-        <li data-step="watched"><span>Watched titles</span><span class="count"></span></li>
-        <li data-step="ratings"><span>Ratings</span><span class="count"></span></li>
-        <li data-step="watchlist"><span>Watch later</span><span class="count"></span></li>
-        <li data-step="tmdb"><span>TMDB IDs</span><span class="count"></span></li>
+      <ul class="hidden group-data-[view=error]:block group-data-[view=running]:block">
+        <li class="flex items-center gap-2 border-t border-neutral-200 py-2 dark:border-neutral-700 data-[state=pending]:text-neutral-500 dark:data-[state=pending]:text-neutral-400" data-step="watched">
+          <span class="shrink-0 [&>svg]:size-4.5 in-data-[state=active]:text-blue-600 in-data-[state=done]:text-green-600 in-data-[state=failed]:text-red-700 dark:in-data-[state=active]:text-blue-400 dark:in-data-[state=done]:text-green-400 dark:in-data-[state=failed]:text-red-300 in-data-[state=active]:[&>svg]:animate-spin" data-mark></span>
+          Watched titles
+          <span class="ml-auto tabular-nums text-neutral-500 dark:text-neutral-400" data-count></span>
+        </li>
+        <li class="flex items-center gap-2 border-t border-neutral-200 py-2 dark:border-neutral-700 data-[state=pending]:text-neutral-500 dark:data-[state=pending]:text-neutral-400" data-step="ratings">
+          <span class="shrink-0 [&>svg]:size-4.5 in-data-[state=active]:text-blue-600 in-data-[state=done]:text-green-600 in-data-[state=failed]:text-red-700 dark:in-data-[state=active]:text-blue-400 dark:in-data-[state=done]:text-green-400 dark:in-data-[state=failed]:text-red-300 in-data-[state=active]:[&>svg]:animate-spin" data-mark></span>
+          Ratings
+          <span class="ml-auto tabular-nums text-neutral-500 dark:text-neutral-400" data-count></span>
+        </li>
+        <li class="flex items-center gap-2 border-t border-neutral-200 py-2 dark:border-neutral-700 data-[state=pending]:text-neutral-500 dark:data-[state=pending]:text-neutral-400" data-step="watchlist">
+          <span class="shrink-0 [&>svg]:size-4.5 in-data-[state=active]:text-blue-600 in-data-[state=done]:text-green-600 in-data-[state=failed]:text-red-700 dark:in-data-[state=active]:text-blue-400 dark:in-data-[state=done]:text-green-400 dark:in-data-[state=failed]:text-red-300 in-data-[state=active]:[&>svg]:animate-spin" data-mark></span>
+          Watch later
+          <span class="ml-auto tabular-nums text-neutral-500 dark:text-neutral-400" data-count></span>
+        </li>
+        <li class="flex items-center gap-2 border-t border-neutral-200 py-2 dark:border-neutral-700 data-[state=pending]:text-neutral-500 dark:data-[state=pending]:text-neutral-400" data-step="tmdb">
+          <span class="shrink-0 [&>svg]:size-4.5 in-data-[state=active]:text-blue-600 in-data-[state=done]:text-green-600 in-data-[state=failed]:text-red-700 dark:in-data-[state=active]:text-blue-400 dark:in-data-[state=done]:text-green-400 dark:in-data-[state=failed]:text-red-300 in-data-[state=active]:[&>svg]:animate-spin" data-mark></span>
+          TMDB IDs
+          <span class="ml-auto tabular-nums text-neutral-500 dark:text-neutral-400" data-count></span>
+        </li>
       </ul>
 
-      <div class="counts" data-show="done">
-        <div><b id="ratings-count"></b>Ratings</div>
-        <div><b id="seen-count"></b>Seen</div>
-        <div><b id="watchlist-count"></b>Watch later</div>
+      <div class="hidden gap-2 text-xs group-data-[view=done]:flex text-neutral-500 dark:text-neutral-400">
+        <div class="flex-1 rounded-lg px-2.5 py-2 bg-neutral-100 dark:bg-neutral-800">
+          <b id="ratings-count" class="block text-xl font-semibold text-neutral-900 dark:text-neutral-100"></b>
+          Ratings
+        </div>
+        <div class="flex-1 rounded-lg px-2.5 py-2 bg-neutral-100 dark:bg-neutral-800">
+          <b id="seen-count" class="block text-xl font-semibold text-neutral-900 dark:text-neutral-100"></b>
+          Seen
+        </div>
+        <div class="flex-1 rounded-lg px-2.5 py-2 bg-neutral-100 dark:bg-neutral-800">
+          <b id="watchlist-count" class="block text-xl font-semibold text-neutral-900 dark:text-neutral-100"></b>
+          Watch later
+        </div>
       </div>
-      <section id="missing" data-show="done">
-        <p id="missing-heading"></p>
-        <ul id="missing-list" class="rows"></ul>
-        <button id="show-missing" class="link"></button>
+      <section id="missing" class="hidden group-data-[view=done]:block">
+        <p id="missing-heading" class="mb-1 text-amber-700 dark:text-amber-400"></p>
+        <ul id="missing-list"></ul>
+        <button
+          id="show-missing"
+          class="cursor-pointer py-2 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+        ></button>
       </section>
 
-      <footer>
-        <p id="account" class="secondary" data-show="ready"></p>
-        <button id="export" class="primary" data-show="ready">Export library</button>
-        <button id="cancel" data-show="running">Cancel</button>
-        <button id="download" class="primary" data-show="done">Download again</button>
-        <button id="back" data-show="done">Start over</button>
-        <button id="open-kinopoisk" data-show="error">Open kinopoisk.ru</button>
-        <button id="retry" class="primary" data-show="error">Try again</button>
+      <footer class="mt-auto flex flex-col gap-2">
+        <button id="export" class="hidden group-data-[view=ready]:block cursor-pointer rounded-lg border border-neutral-900 bg-neutral-900 px-3 py-2 text-white enabled:hover:border-neutral-700 enabled:hover:bg-neutral-700 disabled:cursor-default disabled:opacity-40 dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900 dark:enabled:hover:border-neutral-300 dark:enabled:hover:bg-neutral-300">
+          Export library
+        </button>
+        <button id="cancel" class="hidden group-data-[view=running]:block cursor-pointer rounded-lg border border-neutral-200 px-3 py-2 enabled:hover:bg-neutral-100 disabled:cursor-default disabled:opacity-40 dark:border-neutral-700 dark:enabled:hover:bg-neutral-800">
+          Cancel
+        </button>
+        <button id="download" class="hidden group-data-[view=done]:block cursor-pointer rounded-lg border border-neutral-900 bg-neutral-900 px-3 py-2 text-white enabled:hover:border-neutral-700 enabled:hover:bg-neutral-700 disabled:cursor-default disabled:opacity-40 dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900 dark:enabled:hover:border-neutral-300 dark:enabled:hover:bg-neutral-300">
+          Download again
+        </button>
+        <button id="back" class="hidden group-data-[view=done]:block cursor-pointer rounded-lg border border-neutral-200 px-3 py-2 enabled:hover:bg-neutral-100 disabled:cursor-default disabled:opacity-40 dark:border-neutral-700 dark:enabled:hover:bg-neutral-800">
+          Start over
+        </button>
+        <button id="open-kinopoisk" class="hidden group-data-[view=error]:block cursor-pointer rounded-lg border border-neutral-200 px-3 py-2 enabled:hover:bg-neutral-100 disabled:cursor-default disabled:opacity-40 dark:border-neutral-700 dark:enabled:hover:bg-neutral-800">
+          Open kinopoisk.ru
+        </button>
+        <button id="retry" class="hidden group-data-[view=error]:block cursor-pointer rounded-lg border border-neutral-900 bg-neutral-900 px-3 py-2 text-white enabled:hover:border-neutral-700 enabled:hover:bg-neutral-700 disabled:cursor-default disabled:opacity-40 dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900 dark:enabled:hover:border-neutral-300 dark:enabled:hover:bg-neutral-300">
+          Try again
+        </button>
       </footer>
     </main>
     <script type="module" src="./main.ts"></script>

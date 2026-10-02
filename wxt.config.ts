@@ -1,7 +1,9 @@
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'wxt'
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
+  vite: () => ({ plugins: [tailwindcss()] }),
   manifest: {
     name: 'Kinopoisk export',
     // With no popup, the manifest needs an empty `action` to show the toolbar icon.
