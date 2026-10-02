@@ -39,9 +39,11 @@ The extension talks to two hosts.
 | `kinopoisk.ru`       | Your list pages, with your session cookies                     |
 | `query.wikidata.org` | Kinopoisk IDs, and titles with years for the IDs it can't find |
 
-Nothing goes to [Foyerr](https://foyerr.app) or to me. The file is built in the popup and saved through the browser's download.
+Nothing goes to [Foyerr](https://foyerr.app) or to me. The file is built in the side panel and saved through the browser's download.
 
 The extension needs the `cookies` permission to change one Kinopoisk cookie, `hideBlocks`. Your ratings and your watched titles are on the same page, and a dropdown switches between them. Kinopoisk saves the dropdown's choice in that cookie. The extension sets the cookie to read each list, the same way the dropdown does. It reads no other cookie and changes no other one. After an export the dropdown is left on "оценки".
+
+The `sidePanel` permission lets the extension show its UI in the browser's side panel. A popup closes when you click outside it, and that would stop the export.
 
 Requests to Kinopoisk go one at a time with a 1.5 second pause. If Kinopoisk shows a captcha, the export stops and tells you to solve it.
 
@@ -66,25 +68,26 @@ pnpm install
 pnpm build
 ```
 
-Open `chrome://extensions`, turn on developer mode, click "Load unpacked" and pick `.output/chrome-mv3`. Sign in on kinopoisk.ru, open the extension and click "Export library".
+Open `chrome://extensions`, turn on developer mode, click "Load unpacked" and pick `.output/chrome-mv3`. Sign in on kinopoisk.ru, click the extension's icon and click "Export library" in the side panel.
 
-`pnpm build:firefox` builds for Firefox. I haven't tested that one.
+`pnpm build:firefox` builds for Firefox. I haven't tested that one, and the icon click doesn't open the sidebar there.
 
 ## Development
 
 `pnpm dev` opens a browser with the extension loaded. The profile is kept in `.wxt/chrome-data`, so you stay signed in between runs.
 
-| Path                | Is                                             |
-| ------------------- | ---------------------------------------------- |
-| `entrypoints/popup` | The popup, plain TypeScript                    |
-| `utils/kinopoisk`   | Fetches and parses the Kinopoisk pages         |
-| `utils/wikidata`    | Looks up TMDB IDs with SPARQL                  |
+| Path                        | Is                                     |
+| --------------------------- | -------------------------------------- |
+| `entrypoints/sidepanel`     | The side panel, plain TypeScript       |
+| `entrypoints/background.ts` | Opens the side panel on an icon click  |
+| `utils/kinopoisk`           | Fetches and parses the Kinopoisk pages |
+| `utils/wikidata`            | Looks up TMDB IDs with SPARQL          |
 
 `pnpm compile` typechecks.
 
 ## When it breaks
 
-The parsers depend on Kinopoisk's old profile pages. If a page comes back in a shape the extension doesn't expect, the export stops and the popup says which check failed.
+The parsers depend on Kinopoisk's old profile pages. If a page comes back in a shape the extension doesn't expect, the export stops and the side panel says which check failed.
 
 ## Known gaps
 

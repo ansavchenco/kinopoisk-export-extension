@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kinopoisk export</title>
+  </head>
+  <body>
+    <main data-view="ready">
+      <h1 id="heading">Kinopoisk export</h1>
+      <p id="lead" class="secondary">Saves your library to a JSON file. Takes a few minutes.</p>
+      <p id="error" data-show="error"></p>
+
+      <ul class="rows" data-show="ready">
+        <li>Ratings</li>
+        <li>Watched titles</li>
+        <li>Watch later</li>
+      </ul>
+
+      <ul id="steps" class="rows" data-show="running error">
+        <li data-step="watched"><span>Watched titles</span><span class="count"></span></li>
+        <li data-step="ratings"><span>Ratings</span><span class="count"></span></li>
+        <li data-step="watchlist"><span>Watch later</span><span class="count"></span></li>
+        <li data-step="tmdb"><span>TMDB IDs</span><span class="count"></span></li>
+      </ul>
+
+      <div class="counts" data-show="done">
+        <div><b id="ratings-count"></b>Ratings</div>
+        <div><b id="seen-count"></b>Seen</div>
+        <div><b id="watchlist-count"></b>Watch later</div>
+      </div>
+      <section id="missing" data-show="done">
+        <p id="missing-heading"></p>
+        <ul id="missing-list" class="rows"></ul>
+        <button id="show-missing" class="link"></button>
+      </section>
+
+      <footer>
+        <p id="account" class="secondary" data-show="ready"></p>
+        <button id="export" class="primary" data-show="ready">Export library</button>
+        <button id="cancel" data-show="running">Cancel</button>
+        <button id="download" class="primary" data-show="done">Download again</button>
+        <button id="back" data-show="done">Start over</button>
+        <button id="open-kinopoisk" data-show="error">Open kinopoisk.ru</button>
+        <button id="retry" class="primary" data-show="error">Try again</button>
+      </footer>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

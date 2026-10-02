@@ -129,19 +129,21 @@ function parseTotal(page: Document, itemCount: number) {
   return total ? Number(total) : itemCount
 }
 
-async function fetchHtml(url: string) {
-  const response = await fetch(url, { credentials: 'include' })
+async function fetchHtml(url: string, signal: AbortSignal) {
+  const response = await fetch(url, { credentials: 'include', signal })
   if (!response.ok) throw new Error(`Kinopoisk returned ${response.status}.`)
   if (response.url.includes('showcaptcha')) {
     throw new Error('Kinopoisk shows a captcha. Open kinopoisk.ru, solve it, then try again.')
   }
+  const html = await response.text()
   await new Promise((resolve) => setTimeout(resolve, REQUEST_DELAY_MS))
-  return response.text()
+  signal.throwIfAborted()
+  return html
 }
 
 /** Returns the ID of the signed-in user. It is in the links of the folder page. */
-export async function fetchUserId() {
-  const html = await fetchHtml('https://www.kinopoisk.ru/mykp/folders/3575/?limit=10')
+export async function fetchUserId(signal: AbortSignal) {
+  const html = await fetchHtml('https://www.kinopoisk.ru/mykp/folders/3575/?limit=10', signal)
   const page = new DOMParser().parseFromString(html, 'text/html')
   const href = page.querySelector('a[href^="/user/"]')?.getAttribute('href') ?? ''
   const userId = /^\/user\/(\d+)\//.exec(href)?.[1]
@@ -153,13 +155,14 @@ export async function fetchUserId() {
 export async function fetchList<T extends KinopoiskTitle>(
   urlOfPage: (page: number) => string,
   parsePage: (html: string) => ParsedPage<T>,
-  onProgress: (itemCount: number, total: number) => void
+  onProgress: (itemCount: number, total: number) => void,
+  signal: AbortSignal
 ): Promise<T[]> {
   const items: T[] = []
   const ids = new Set<string>()
 
   for (let page = 1; ; page++) {
-    const parsed = parsePage(await fetchHtml(urlOfPage(page)))
+    const parsed = parsePage(await fetchHtml(urlOfPage(page), signal))
 
     let newItemCount = 0
     for (const item of parsed.items) {
@@ -179,7 +182,8 @@ export async function fetchList<T extends KinopoiskTitle>(
 export async function fetchVotesList(
   userId: string,
   list: VotesList,
-  onProgress: (itemCount: number, total: number) => void
+  onProgress: (itemCount: number, total: number) => void,
+  signal: AbortSignal
 ) {
   // The "оценки / просмотры" select of the page saves its value in these two
   // bits of the `hideBlocks` cookie before it loads the list, so we do the same.
@@ -217,6 +221,7 @@ export async function fetchVotesList(
       }
       return parsed
     },
-    onProgress
+    onProgress,
+    signal
   )
 }

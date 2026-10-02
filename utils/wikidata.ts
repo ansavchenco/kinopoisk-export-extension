@@ -12,11 +12,12 @@ type Row = Record<string, { value: string } | undefined>
 const BATCH_SIZE = 200
 
 // P2603 is the Kinopoisk ID, P4947 the TMDB movie ID, P4983 the TMDB series ID.
-async function runQuery(query: string): Promise<Row[]> {
+async function runQuery(query: string, signal: AbortSignal): Promise<Row[]> {
   const response = await fetch('https://query.wikidata.org/sparql', {
     method: 'POST',
     headers: { Accept: 'application/sparql-results+json' },
     body: new URLSearchParams({ query }),
+    signal,
   })
   if (!response.ok) throw new Error(`Wikidata returned ${response.status}.`)
 
@@ -28,7 +29,10 @@ async function runQuery(query: string): Promise<Row[]> {
  * Looks up the TMDB IDs of Kinopoisk IDs in Wikidata. A Kinopoisk ID that
  * Wikidata does not have is not in the returned map.
  */
-export async function fetchTmdbIds(kinopoiskIds: string[]): Promise<Map<string, TmdbIds>> {
+export async function fetchTmdbIds(
+  kinopoiskIds: string[],
+  signal: AbortSignal
+): Promise<Map<string, TmdbIds>> {
   const result = new Map<string, TmdbIds>()
 
   for (let start = 0; start < kinopoiskIds.length; start += BATCH_SIZE) {
@@ -36,12 +40,15 @@ export async function fetchTmdbIds(kinopoiskIds: string[]): Promise<Map<string, 
       .slice(start, start + BATCH_SIZE)
       .map((id) => `"${id}"`)
       .join(' ')
-    const rows = await runQuery(`SELECT ?kp ?movie ?tv WHERE {
+    const rows = await runQuery(
+      `SELECT ?kp ?movie ?tv WHERE {
       VALUES ?kp { ${values} }
       ?item wdt:P2603 ?kp .
       OPTIONAL { ?item wdt:P4947 ?movie }
       OPTIONAL { ?item wdt:P4983 ?tv }
-    }`)
+    }`,
+      signal
+    )
 
     for (const row of rows) {
       const kinopoiskId = row.kp!.value
@@ -67,7 +74,10 @@ function normalizeRussianTitle(title: string) {
  * - it has a TMDB ID of the same type and no Kinopoisk ID of another title;
  * - it has the same year, or the same Russian title and a year at most one off.
  */
-export async function fetchTmdbIdsByTitle(titles: KinopoiskTitle[]): Promise<Map<string, TmdbIds>> {
+export async function fetchTmdbIdsByTitle(
+  titles: KinopoiskTitle[],
+  signal: AbortSignal
+): Promise<Map<string, TmdbIds>> {
   const result = new Map<string, TmdbIds>()
   const titlesWithYear = titles.filter((title) => title.year != null)
 
@@ -82,7 +92,8 @@ export async function fetchTmdbIdsByTitle(titles: KinopoiskTitle[]): Promise<Map
       })
       .join(' ')
     // P577 is the publication date of a film, P580 the start date of a series.
-    const rows = await runQuery(`SELECT ?name ?item ?movie ?tv ?kp ?date ?russianLabel WHERE {
+    const rows = await runQuery(
+      `SELECT ?name ?item ?movie ?tv ?kp ?date ?russianLabel WHERE {
       VALUES (?name ?label) { ${values} }
       VALUES ?labelOrAlias { rdfs:label skos:altLabel }
       ?item ?labelOrAlias ?label .
@@ -92,7 +103,9 @@ export async function fetchTmdbIdsByTitle(titles: KinopoiskTitle[]): Promise<Map
       OPTIONAL { ?item wdt:P2603 ?kp }
       OPTIONAL { ?item wdt:P577|wdt:P580 ?date }
       OPTIONAL { ?item rdfs:label ?russianLabel FILTER(LANG(?russianLabel) = "ru") }
-    }`)
+    }`,
+      signal
+    )
 
     for (const title of batch) {
       const matches = new Map<string, string>()
