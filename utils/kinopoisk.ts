@@ -207,7 +207,9 @@ export async function fetchVotesList(
   })
 
   return fetchList(
-    (page) => `https://www.kinopoisk.ru/user/${userId}/votes/list/vs/${list}/page/${page}/`,
+    // 200 titles a page, the largest page size the site offers.
+    (page) =>
+      `https://www.kinopoisk.ru/user/${userId}/votes/list/vs/${list}/perpage/200/page/${page}/`,
     (html) => {
       const parsed = parseVotesPage(html)
       if (parsed == null) {
