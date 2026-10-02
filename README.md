@@ -41,7 +41,7 @@ The extension talks to two hosts.
 
 Nothing goes to [Foyerr](https://foyerr.app) or to me. The file is built in the popup and saved through the browser's download.
 
-The `cookies` permission is there for one cookie. Kinopoisk picks between the ratings list and the watched list from `hideBlocks`, not from the URL, so the extension sets the same two bits the page's own select sets. After an export the filter is left on "оценки".
+The extension needs the `cookies` permission to change one Kinopoisk cookie, `hideBlocks`. Your ratings and your watched titles are on the same page, and a dropdown switches between them. Kinopoisk saves the dropdown's choice in that cookie. The extension sets the cookie to read each list, the same way the dropdown does. It reads no other cookie and changes no other one. After an export the dropdown is left on "оценки".
 
 Requests to Kinopoisk go one at a time with a 1.5 second pause. If Kinopoisk shows a captcha, the export stops and tells you to solve it.
 
