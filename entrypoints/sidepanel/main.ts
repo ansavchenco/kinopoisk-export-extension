@@ -142,7 +142,7 @@ async function checkAccount() {
   exportButton.disabled = true
   try {
     userId = await fetchUserId(abortController.signal)
-    setAccount('done', `Signed in as user ${userId}`)
+    setAccount('done', 'Signed in on kinopoisk.ru')
   } catch (error) {
     setAccount('failed', error instanceof Error ? error.message : String(error))
   }
