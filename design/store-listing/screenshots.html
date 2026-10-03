@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kinopoisk export store screenshots</title>
+    <style>
+      @font-face {
+        font-family: Inter;
+        src: url('../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2');
+        font-weight: 100 900;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        font-family:
+          Inter,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        color: #171717;
+      }
+      button {
+        font: inherit;
+      }
+
+      .shot {
+        width: 1280px;
+        height: 800px;
+        overflow: hidden;
+        background: #ebe8e1;
+      }
+
+      .browser {
+        width: 100%;
+        height: 100%;
+        background: white;
+      }
+
+      .chrome {
+        height: 88px;
+        color: #424242;
+        background: #eeeae4;
+        border-bottom: 1px solid #d8d3cb;
+      }
+
+      .tabbar {
+        height: 40px;
+        display: flex;
+        align-items: end;
+        padding: 6px 14px 0;
+        gap: 7px;
+      }
+
+      .traffic {
+        display: flex;
+        gap: 8px;
+        align-self: center;
+        margin: 0 15px 5px 1px;
+      }
+      .traffic i {
+        display: block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+      .traffic i:nth-child(1) {
+        background: #ff5f57;
+      }
+      .traffic i:nth-child(2) {
+        background: #febc2e;
+      }
+      .traffic i:nth-child(3) {
+        background: #28c840;
+      }
+
+      .tab {
+        width: 250px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 0 13px;
+        border-radius: 10px 10px 0 0;
+        background: white;
+        font-size: 13px;
+        box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.03);
+      }
+
+      .tab img {
+        width: 17px;
+        height: 17px;
+      }
+      .tab .x {
+        margin-left: auto;
+        color: #777;
+        font-size: 18px;
+      }
+      .new-tab {
+        align-self: center;
+        margin: 0 0 5px 6px;
+        font-size: 22px;
+        color: #676767;
+      }
+
+      .omnibar-row {
+        height: 48px;
+        display: flex;
+        align-items: center;
+        padding: 0 15px;
+        gap: 14px;
+      }
+
+      .nav {
+        font-size: 22px;
+        color: #6b6b6b;
+        letter-spacing: 8px;
+        white-space: nowrap;
+      }
+      .omnibar {
+        flex: 1;
+        height: 34px;
+        border-radius: 18px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        padding: 0 15px;
+        font-size: 13px;
+        color: #666;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.025);
+      }
+      .lock {
+        margin-right: 10px;
+        color: #737373;
+      }
+      .toolbar-icon {
+        width: 29px;
+        height: 29px;
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        background: #ded9d1;
+      }
+      .toolbar-icon img {
+        width: 22px;
+        height: 22px;
+      }
+      .avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #202020;
+        color: white;
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+      }
+
+      .content {
+        height: calc(100% - 88px);
+        display: flex;
+      }
+      .site {
+        flex: 1;
+        min-width: 0;
+        background: #f7f6f3;
+        position: relative;
+        overflow: hidden;
+      }
+      .site::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(90deg, transparent 74%, rgba(247, 246, 243, 0.75));
+      }
+
+      .site-header {
+        height: 70px;
+        padding: 0 44px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #111;
+        color: white;
+      }
+      .kp-brand {
+        font-size: 22px;
+        font-weight: 750;
+        letter-spacing: -0.5px;
+      }
+      .kp-brand i {
+        font-style: normal;
+        color: #ff6b00;
+      }
+      .site-nav {
+        display: flex;
+        gap: 24px;
+        color: #b8b8b8;
+        font-size: 13px;
+      }
+
+      .library {
+        padding: 34px 54px;
+        max-width: 870px;
+      }
+      .eyebrow {
+        color: #777;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+      }
+      .library h2 {
+        margin: 7px 0 6px;
+        font-size: 30px;
+        letter-spacing: -0.8px;
+      }
+      .library-lead {
+        margin: 0 0 25px;
+        color: #737373;
+        font-size: 14px;
+      }
+      .filter-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+      .chip {
+        padding: 7px 12px;
+        border-radius: 18px;
+        font-size: 12px;
+        background: #e9e6df;
+        color: #5d5d5d;
+      }
+      .chip.active {
+        color: white;
+        background: #202020;
+      }
+
+      .movie-list {
+        border-top: 1px solid #ddd9d1;
+      }
+      .movie {
+        display: grid;
+        grid-template-columns: 42px 1fr auto;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 4px;
+        border-bottom: 1px solid #ddd9d1;
+      }
+      .poster {
+        width: 38px;
+        height: 50px;
+        border-radius: 4px;
+        background: linear-gradient(145deg, #303030, #ff6b00);
+      }
+      .movie:nth-child(2) .poster {
+        background: linear-gradient(145deg, #b68f63, #202020);
+      }
+      .movie:nth-child(3) .poster {
+        background: linear-gradient(145deg, #25394a, #7899a8);
+      }
+      .movie:nth-child(4) .poster {
+        background: linear-gradient(145deg, #531a16, #e6a447);
+      }
+      .movie:nth-child(5) .poster {
+        background: linear-gradient(145deg, #1f211f, #78836c);
+      }
+      .movie b {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      .movie small {
+        color: #838383;
+        font-size: 12px;
+      }
+      .rating {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: #202020;
+        color: white;
+        font-weight: 750;
+        font-size: 13px;
+      }
+
+      .side-panel {
+        width: 386px;
+        flex: none;
+        position: relative;
+        background: #fff;
+        border-left: 1px solid #d7d7d7;
+        box-shadow: -12px 0 35px rgba(0, 0, 0, 0.09);
+      }
+      .panel-top {
+        height: 44px;
+        display: flex;
+        align-items: center;
+        padding: 0 15px;
+        border-bottom: 1px solid #e5e5e5;
+        font-size: 12px;
+        color: #666;
+      }
+      .panel-top img {
+        width: 24px;
+        height: 24px;
+        margin-right: 9px;
+      }
+      .panel-top b {
+        color: #262626;
+        font-size: 13px;
+      }
+      .panel-top .close {
+        margin-left: auto;
+        font-size: 19px;
+        color: #777;
+      }
+
+      .panel {
+        height: calc(100% - 44px);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        padding: 22px 20px 20px;
+        font-size: 14px;
+      }
+      .panel h1 {
+        margin: 0;
+        font-size: 19px;
+        line-height: 1.25;
+        font-weight: 650;
+        letter-spacing: -0.25px;
+      }
+      .lead {
+        margin: -4px 0 0;
+        color: #737373;
+        line-height: 1.45;
+      }
+      .account {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        padding: 11px 12px;
+        border-radius: 9px;
+        background: #f3f3f3;
+        line-height: 1.35;
+      }
+      .mark {
+        width: 18px;
+        height: 18px;
+        flex: none;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+      }
+      .green {
+        color: #16a34a;
+      }
+      .blue {
+        color: #2563eb;
+      }
+      .muted {
+        color: #a3a3a3;
+      }
+      .orange {
+        color: #d97706;
+      }
+
+      .rows {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .row {
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        border-top: 1px solid #e4e4e4;
+      }
+      .row-count {
+        margin-left: auto;
+        color: #737373;
+        font-variant-numeric: tabular-nums;
+      }
+      .row.pending {
+        color: #858585;
+      }
+      .row .symbol {
+        width: 18px;
+        height: 18px;
+        text-align: center;
+        font-size: 17px;
+      }
+      .row .symbol svg {
+        width: 18px;
+        height: 18px;
+        display: block;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .row .symbol .spinner {
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .footer {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .button {
+        width: 100%;
+        border-radius: 9px;
+        padding: 10px 13px;
+        border: 1px solid #dedede;
+        background: white;
+        color: #222;
+      }
+      .button.primary {
+        background: #1b1b1b;
+        border-color: #1b1b1b;
+        color: white;
+        font-weight: 550;
+      }
+
+      .stats {
+        display: flex;
+        gap: 8px;
+      }
+      .stat {
+        flex: 1;
+        min-width: 0;
+        border-radius: 9px;
+        background: #f3f3f3;
+        padding: 10px;
+        color: #777;
+        font-size: 11px;
+      }
+      .stat b {
+        display: block;
+        color: #1d1d1d;
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+      .story-label {
+        position: absolute;
+        z-index: 2;
+        left: 54px;
+        bottom: 34px;
+        max-width: 470px;
+        padding: 16px 19px;
+        border-radius: 13px;
+        color: white;
+        background: rgba(20, 20, 20, 0.94);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+      }
+      .story-label b {
+        display: block;
+        margin-bottom: 3px;
+        font-size: 17px;
+      }
+      .story-label span {
+        color: #c9c9c9;
+        font-size: 12px;
+      }
+
+      .shot-progress .story-label {
+        background: rgba(190, 75, 0, 0.96);
+      }
+      .shot-progress .story-label span {
+        color: #ffe2cf;
+      }
+      .shot-done .story-label {
+        background: rgba(22, 101, 52, 0.96);
+      }
+      .shot-done .story-label span {
+        color: #d4f7df;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shot" id="shot">
+      <div class="browser">
+        <div class="chrome">
+          <div class="tabbar">
+            <div class="traffic"><i></i><i></i><i></i></div>
+            <div class="tab">
+              <img src="../../public/icon/32.png" alt="" /><span>Мои фильмы — Кинопоиск</span
+              ><span class="x">×</span>
+            </div>
+            <span class="new-tab">+</span>
+          </div>
+          <div class="omnibar-row">
+            <div class="nav">‹ › ↻</div>
+            <div class="omnibar"><span class="lock">●</span>kinopoisk.ru/user/123456/votes/</div>
+            <div class="toolbar-icon">
+              <img src="../../public/icon/32.png" alt="Kinopoisk export" />
+            </div>
+            <div class="avatar">A</div>
+            <div style="font-size: 22px; color: #666">⋮</div>
+          </div>
+        </div>
+
+        <div class="content">
+          <section class="site">
+            <div class="site-header">
+              <div class="kp-brand"><i>Кино</i>поиск</div>
+              <div class="site-nav">
+                <span>Фильмы</span><span>Сериалы</span><span>Моё кино</span>
+              </div>
+            </div>
+            <div class="library">
+              <div class="eyebrow">Личная коллекция</div>
+              <h2>Мои фильмы</h2>
+              <p class="library-lead">Оценки, просмотры и фильмы, которые вы хотите посмотреть.</p>
+              <div class="filter-row">
+                <span class="chip active">Оценки</span><span class="chip">Просмотры</span
+                ><span class="chip">Буду смотреть</span>
+              </div>
+              <div class="movie-list">
+                <div class="movie">
+                  <div class="poster"></div>
+                  <div><b>Интерстеллар</b><small>Interstellar · 2014</small></div>
+                  <div class="rating">9</div>
+                </div>
+                <div class="movie">
+                  <div class="poster"></div>
+                  <div><b>Дюна: Часть вторая</b><small>Dune: Part Two · 2024</small></div>
+                  <div class="rating">8</div>
+                </div>
+                <div class="movie">
+                  <div class="poster"></div>
+                  <div><b>Извне</b><small>From · 2022</small></div>
+                  <div class="rating">8</div>
+                </div>
+                <div class="movie">
+                  <div class="poster"></div>
+                  <div><b>Орудия</b><small>Weapons · 2025</small></div>
+                  <div class="rating">7</div>
+                </div>
+                <div class="movie">
+                  <div class="poster"></div>
+                  <div><b>Разделение</b><small>Severance · 2022</small></div>
+                  <div class="rating">9</div>
+                </div>
+              </div>
+            </div>
+            <div class="story-label" id="story"></div>
+          </section>
+
+          <aside class="side-panel">
+            <div class="panel-top">
+              <img src="../../public/icon/32.png" alt="" /><b>Kinopoisk export</b
+              ><span class="close">×</span>
+            </div>
+            <main class="panel" id="panel"></main>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <template id="ready">
+      <h1>Kinopoisk export</h1>
+      <p class="lead">Saves your library to a JSON file. Takes a few minutes.</p>
+      <div class="account">
+        <span class="mark green">✓</span><span>Signed in as user 123456</span>
+      </div>
+      <ul class="rows">
+        <li class="row">
+          <span class="symbol">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"
+              />
+            </svg>
+          </span>
+          Ratings
+        </li>
+        <li class="row">
+          <span class="symbol">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
+              />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </span>
+          Watched titles
+        </li>
+        <li class="row">
+          <span class="symbol">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 6v6l4 2" />
+            </svg>
+          </span>
+          Watch later
+        </li>
+      </ul>
+      <div class="footer"><button class="button primary">Export library</button></div>
+    </template>
+
+    <template id="progress">
+      <h1>Exporting…</h1>
+      <p class="lead">Keep this panel open.</p>
+      <ul class="rows">
+        <li class="row">
+          <span class="symbol green">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+          </span>
+          Watched titles<span class="row-count">142</span>
+        </li>
+        <li class="row">
+          <span class="symbol green">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+          </span>
+          Ratings<span class="row-count">78</span>
+        </li>
+        <li class="row">
+          <span class="symbol blue">
+            <svg class="spinner" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+            </svg>
+          </span>
+          Watch later<span class="row-count">34 of 65</span>
+        </li>
+        <li class="row pending">
+          <span class="symbol">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+            </svg>
+          </span>
+          TMDB IDs<span class="row-count"></span>
+        </li>
+      </ul>
+      <div class="footer"><button class="button">Cancel</button></div>
+    </template>
+
+    <template id="done">
+      <h1>Export saved</h1>
+      <p class="lead">kinopoisk-library.json is in your downloads.</p>
+      <div class="stats">
+        <div class="stat"><b>78</b>Ratings</div>
+        <div class="stat"><b>64</b>Seen</div>
+        <div class="stat"><b>65</b>Watch later</div>
+      </div>
+      <div class="footer">
+        <button class="button primary">Download again</button
+        ><button class="button">Start over</button>
+      </div>
+    </template>
+
+    <script>
+      const states = {
+        ready: {
+          story:
+            '<b>Your library, ready to move.</b><span>Ratings, watched titles and Watch Later — exported from one place.</span>',
+          className: 'shot-ready',
+        },
+        progress: {
+          story:
+            '<b>Clear progress, no surprises.</b><span>Lists are fetched one at a time, with every step visible.</span>',
+          className: 'shot-progress',
+        },
+        done: {
+          story:
+            '<b>One portable JSON file.</b><span>Your data is built in the browser and saved directly to Downloads.</span>',
+          className: 'shot-done',
+        },
+      }
+      const state = new URLSearchParams(location.search).get('shot') || 'ready'
+      const config = states[state] || states.ready
+      document.body.className = config.className
+      document
+        .querySelector('#panel')
+        .append(document.querySelector(`#${state}`).content.cloneNode(true))
+      document.querySelector('#story').innerHTML = config.story
+    </script>
+  </body>
+</html>

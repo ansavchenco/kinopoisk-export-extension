@@ -11,6 +11,7 @@
     "build:firefox": "wxt build -b firefox",
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
+    "release": "pnpm compile && wxt zip",
     "compile": "tsc --noEmit",
     "format": "prettier --write .",
     "postinstall": "wxt prepare"
