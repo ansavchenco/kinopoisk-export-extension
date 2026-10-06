@@ -176,7 +176,7 @@ async function exportLibrary() {
     setStep('ratings', 'done', String(rated.length))
 
     const watchlist = await fetchList(
-      (page) => `https://www.kinopoisk.ru/mykp/folders/3575/?vector=desc&limit=200&page=${page}`,
+      (page) => `https://www.kinopoisk.ru/mykp/folders/3575/?limit=50&page=${page}`,
       parseFolderPage,
       startStep('watchlist'),
       signal
