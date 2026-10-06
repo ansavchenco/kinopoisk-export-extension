@@ -2,14 +2,14 @@
 
 Effective date: October 3, 2026
 
-Kinopoisk export is a browser extension that exports a user’s Kinopoisk ratings, watched titles, Watch Later list, and favorites to a JSON file.
+Kinopoisk export is a browser extension that exports a user’s Kinopoisk ratings, watched titles, watch later list, and favorites to a JSON file.
 
 ## Data handled by the extension
 
 To perform an export, the extension processes:
 
 - the numeric identifier of the signed-in Kinopoisk account;
-- the user’s Kinopoisk ratings, watched status, Watch Later list, favorites, and associated dates;
+- the user’s Kinopoisk ratings, watched status, watch later list, favorites, and associated dates;
 - title information including names, years, media types, and Kinopoisk IDs;
 - the user’s existing Kinopoisk authentication session, which the browser automatically supplies to Kinopoisk.
 
