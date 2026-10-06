@@ -379,6 +379,21 @@
       .orange {
         color: #d97706;
       }
+      .red {
+        color: #b91c1c;
+      }
+
+      .error-box {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        margin: 0;
+        padding: 11px 12px;
+        border-radius: 9px;
+        color: #b91c1c;
+        background: #fef2f2;
+        line-height: 1.4;
+      }
 
       .rows {
         list-style: none;
@@ -447,7 +462,8 @@
       }
 
       .stats {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 8px;
       }
       .stat {
@@ -499,6 +515,12 @@
       .shot-done .story-label span {
         color: #d4f7df;
       }
+      .shot-error .story-label {
+        background: rgba(153, 27, 27, 0.96);
+      }
+      .shot-error .story-label span {
+        color: #fee2e2;
+      }
     </style>
   </head>
   <body>
@@ -535,10 +557,10 @@
             <div class="library">
               <div class="eyebrow">Личная коллекция</div>
               <h2>Мои фильмы</h2>
-              <p class="library-lead">Оценки, просмотры и фильмы, которые вы хотите посмотреть.</p>
+              <p class="library-lead">Оценки, просмотры и сохранённые фильмы.</p>
               <div class="filter-row">
                 <span class="chip active">Оценки</span><span class="chip">Просмотры</span
-                ><span class="chip">Буду смотреть</span>
+                ><span class="chip">Буду смотреть</span><span class="chip">Любимые фильмы</span>
               </div>
               <div class="movie-list">
                 <div class="movie">
@@ -586,7 +608,7 @@
       <h1>Kinopoisk export</h1>
       <p class="lead">Saves your library to a JSON file. Takes a few minutes.</p>
       <div class="account">
-        <span class="mark green">✓</span><span>Signed in as user 123456</span>
+        <span class="mark green">✓</span><span>Signed in on kinopoisk.ru</span>
       </div>
       <ul class="rows">
         <li class="row">
@@ -619,6 +641,16 @@
           </span>
           Watch later
         </li>
+        <li class="row">
+          <span class="symbol">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+              />
+            </svg>
+          </span>
+          Favorites
+        </li>
       </ul>
       <div class="footer"><button class="button primary">Export library</button></div>
     </template>
@@ -644,12 +676,20 @@
           Ratings<span class="row-count">78</span>
         </li>
         <li class="row">
+          <span class="symbol green">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+          </span>
+          Watch later<span class="row-count">65</span>
+        </li>
+        <li class="row">
           <span class="symbol blue">
             <svg class="spinner" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M21 12a9 9 0 1 1-6.219-8.56" />
             </svg>
           </span>
-          Watch later<span class="row-count">34 of 65</span>
+          Favorites<span class="row-count">18 of 27</span>
         </li>
         <li class="row pending">
           <span class="symbol">
@@ -670,6 +710,7 @@
         <div class="stat"><b>78</b>Ratings</div>
         <div class="stat"><b>64</b>Seen</div>
         <div class="stat"><b>65</b>Watch later</div>
+        <div class="stat"><b>27</b>Favorites</div>
       </div>
       <div class="footer">
         <button class="button primary">Download again</button
@@ -677,11 +718,57 @@
       </div>
     </template>
 
+    <template id="error">
+      <h1>Export stopped</h1>
+      <p class="error-box">
+        <span class="mark red">⚠</span
+        ><span>Kinopoisk shows a captcha. Open kinopoisk.ru, solve it, then try again.</span>
+      </p>
+      <ul class="rows">
+        <li class="row">
+          <span class="symbol green">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+          </span>
+          Watched titles<span class="row-count">142</span>
+        </li>
+        <li class="row">
+          <span class="symbol green">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+          </span>
+          Ratings<span class="row-count">78</span>
+        </li>
+        <li class="row">
+          <span class="symbol red">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </span>
+          Watch later
+        </li>
+        <li class="row pending">
+          <span class="symbol">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" /></svg>
+          </span>
+          Favorites
+        </li>
+        <li class="row pending">
+          <span class="symbol">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" /></svg>
+          </span>
+          TMDB IDs
+        </li>
+      </ul>
+      <div class="footer">
+        <button class="button">Open kinopoisk.ru</button
+        ><button class="button primary">Try again</button>
+      </div>
+    </template>
+
     <script>
       const states = {
         ready: {
           story:
-            '<b>Your library, ready to move.</b><span>Ratings, watched titles and watch later — exported from one place.</span>',
+            '<b>Your library, ready to move.</b><span>Ratings, watched titles, watch later and favorites — exported from one place.</span>',
           className: 'shot-ready',
         },
         progress: {
@@ -693,6 +780,11 @@
           story:
             '<b>One portable JSON file.</b><span>Your data is built in the browser and saved directly to Downloads.</span>',
           className: 'shot-done',
+        },
+        error: {
+          story:
+            '<b>Helpful when something gets in the way.</b><span>See exactly where the export stopped, fix the issue and try again.</span>',
+          className: 'shot-error',
         },
       }
       const state = new URLSearchParams(location.search).get('shot') || 'ready'
