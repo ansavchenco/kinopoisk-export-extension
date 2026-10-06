@@ -1,6 +1,6 @@
 {
   "name": "kinopoisk-export-ext",
-  "description": "Exports your Kinopoisk ratings, watched titles and watch later folder to a file",
+  "description": "Exports your Kinopoisk ratings, watched titles, watch later folder and favorites to a file",
   "private": true,
   "version": "1.0.0",
   "type": "module",

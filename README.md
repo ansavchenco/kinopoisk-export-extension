@@ -6,11 +6,12 @@ I built it for the Kinopoisk import in [Foyerr](https://foyerr.app). The source 
 
 ## What it exports
 
-| Key         | Kinopoisk page         | Has                  |
-| ----------- | ---------------------- | -------------------- |
-| `ratings`   | Оценки                 | Your rating, 1 to 10 |
-| `seen`      | Просмотры              | Watched, not rated   |
-| `watchlist` | The Буду смотреть list | Date added           |
+| Key         | Kinopoisk page          | Has                  |
+| ----------- | ----------------------- | -------------------- |
+| `ratings`   | Оценки                  | Your rating, 1 to 10 |
+| `seen`      | Просмотры               | Watched, not rated   |
+| `watchlist` | The Буду смотреть list  | Date added           |
+| `favorites` | The Любимые фильмы list | Date added           |
 
 Every title looks like this.
 
@@ -89,6 +90,6 @@ The parsers depend on Kinopoisk's old profile pages. If a page comes back in a s
 
 ## Known gaps
 
-- The watch later folder writes "Dog Stars, The". The extension moves a trailing "The", "A" or "An" to the front. Articles in other languages stay where Kinopoisk put them.
+- The watch later and favorites folders write "Dog Stars, The". The extension moves a trailing "The", "A" or "An" to the front. Articles in other languages stay where Kinopoisk put them.
 - A title with no year on Kinopoisk never gets a TMDB ID from step 2.
 - Custom folders are not exported.

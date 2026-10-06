@@ -1,5 +1,15 @@
 import type { LucideIcon } from 'lucide-solid'
-import { Check, Circle, Clock, Eye, LoaderCircle, Star, TriangleAlert, X } from 'lucide-solid'
+import {
+  Check,
+  Circle,
+  Clock,
+  Eye,
+  Heart,
+  LoaderCircle,
+  Star,
+  TriangleAlert,
+  X,
+} from 'lucide-solid'
 import type { JSX } from 'solid-js'
 import { createSignal, For, onMount, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
@@ -25,6 +35,7 @@ const STEPS: { step: Step; label: string }[] = [
   { step: 'watched', label: 'Watched titles' },
   { step: 'ratings', label: 'Ratings' },
   { step: 'watchlist', label: 'Watch later' },
+  { step: 'favorites', label: 'Favorites' },
   { step: 'tmdb', label: 'TMDB IDs' },
 ]
 
@@ -162,7 +173,7 @@ function ErrorBox(props: { text: string }) {
 
 function Stat(props: { count: number; label: string }) {
   return (
-    <div class="flex-1 rounded-lg bg-neutral-100 px-2.5 py-2 dark:bg-neutral-800">
+    <div class="rounded-lg bg-neutral-100 px-2.5 py-2 dark:bg-neutral-800">
       <b class="block text-xl font-semibold text-neutral-900 dark:text-neutral-100">
         {props.count}
       </b>
@@ -216,6 +227,7 @@ export function App() {
     watched: { state: 'pending', count: '' },
     ratings: { state: 'pending', count: '' },
     watchlist: { state: 'pending', count: '' },
+    favorites: { state: 'pending', count: '' },
     tmdb: { state: 'pending', count: '' },
   })
   const [error, setError] = createSignal('')
@@ -296,6 +308,10 @@ export function App() {
             <Clock class="size-4.5 shrink-0" />
             Watch later
           </li>
+          <li class={ROW}>
+            <Heart class="size-4.5 shrink-0" />
+            Favorites
+          </li>
         </ul>
       </Show>
 
@@ -320,10 +336,11 @@ export function App() {
       <Show when={view() === 'done' && result()}>
         {(done) => (
           <>
-            <div class={`flex gap-2 text-xs ${MUTED}`}>
+            <div class={`grid grid-cols-2 gap-2 text-xs min-[400px]:grid-cols-4 ${MUTED}`}>
               <Stat count={done().library.ratings.length} label="Ratings" />
               <Stat count={done().library.seen.length} label="Seen" />
               <Stat count={done().library.watchlist.length} label="Watch later" />
+              <Stat count={done().library.favorites.length} label="Favorites" />
             </div>
             <MissingTitles titles={done().missing} />
           </>

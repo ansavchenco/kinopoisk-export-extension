@@ -3,7 +3,7 @@ import { fetchList, fetchUserId, fetchVotesList, parseFolderPage } from '@/utils
 import type { TmdbIds } from '@/utils/wikidata'
 import { fetchTmdbIds, fetchTmdbIdsByTitle } from '@/utils/wikidata'
 
-export type Step = 'watched' | 'ratings' | 'watchlist' | 'tmdb'
+export type Step = 'watched' | 'ratings' | 'watchlist' | 'favorites' | 'tmdb'
 
 /**
  * Tells the side panel how the export goes. `count` is "12 of 558" while a
@@ -16,6 +16,7 @@ export interface ExportResult {
     ratings: unknown[]
     seen: unknown[]
     watchlist: unknown[]
+    favorites: unknown[]
   }
   /** The titles that have no TMDB ID. */
   missing: KinopoiskTitle[]
@@ -73,9 +74,17 @@ export async function exportLibrary(
   )
   onStep('watchlist', 'done', String(watchlist.length))
 
+  const favorites = await fetchList(
+    (page) => `https://www.kinopoisk.ru/mykp/folders/6/?limit=50&page=${page}`,
+    parseFolderPage,
+    startStep('favorites'),
+    signal
+  )
+  onStep('favorites', 'done', String(favorites.length))
+
   startStep('tmdb')
   const titles = new Map(
-    [...rated, ...watched, ...watchlist].map((item) => [item.kinopoiskId, item])
+    [...rated, ...watched, ...watchlist, ...favorites].map((item) => [item.kinopoiskId, item])
   )
   const tmdbIds = await fetchTmdbIds([...titles.keys()], signal)
 
@@ -97,6 +106,7 @@ export async function exportLibrary(
         .filter((item) => !ratedIds.has(item.kinopoiskId))
         .map(({ rating, ...item }) => withTmdbId(item, tmdbIds)),
       watchlist: watchlist.map((item) => withTmdbId(item, tmdbIds)),
+      favorites: favorites.map((item) => withTmdbId(item, tmdbIds)),
     },
     missing: [...titles.values()].filter(hasNoTmdbId),
   }
