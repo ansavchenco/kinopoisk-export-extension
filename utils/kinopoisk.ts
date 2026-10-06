@@ -130,8 +130,20 @@ function parseTotal(page: Document, itemCount: number) {
 }
 
 async function fetchHtml(url: string, signal: AbortSignal) {
-  const response = await fetch(url, { credentials: 'include', signal })
-  if (!response.ok) throw new Error(`Kinopoisk returned ${response.status}.`)
+  let response: Response
+  try {
+    response = await fetch(url, { credentials: 'include', signal })
+  } catch (error) {
+    if (signal.aborted) throw error
+    throw new Error('Could not reach kinopoisk.ru. Check your connection, then try again.')
+  }
+  // Kinopoisk sends a user who is signed out to Yandex to sign in.
+  if (new URL(response.url).hostname.endsWith('passport.yandex.ru')) {
+    throw new Error('Open kinopoisk.ru and sign in, then try again.')
+  }
+  if (!response.ok) {
+    throw new Error(`Kinopoisk returned error ${response.status}. Try again later.`)
+  }
   if (response.url.includes('showcaptcha')) {
     throw new Error('Kinopoisk shows a captcha. Open kinopoisk.ru, solve it, then try again.')
   }
@@ -141,13 +153,21 @@ async function fetchHtml(url: string, signal: AbortSignal) {
   return html
 }
 
-/** Returns the ID of the signed-in user. It is in the links of the folder page. */
+/**
+ * Returns the ID of the signed-in user. It is in the links of the folder page.
+ * `fetchHtml` finds out if the user is signed out, so a page with no such link
+ * means that Kinopoisk has changed the page.
+ */
 export async function fetchUserId(signal: AbortSignal) {
   const html = await fetchHtml('https://www.kinopoisk.ru/mykp/folders/3575/?limit=10', signal)
   const page = new DOMParser().parseFromString(html, 'text/html')
   const href = page.querySelector('a[href^="/user/"]')?.getAttribute('href') ?? ''
   const userId = /^\/user\/(\d+)\//.exec(href)?.[1]
-  if (userId == null) throw new Error('Sign in on kinopoisk.ru, then try again.')
+  if (userId == null) {
+    throw new Error(
+      'Could not find your account on the Kinopoisk page. The extension needs an update.'
+    )
+  }
   return userId
 }
 

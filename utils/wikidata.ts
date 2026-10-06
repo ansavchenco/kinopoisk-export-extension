@@ -13,13 +13,21 @@ const BATCH_SIZE = 200
 
 // P2603 is the Kinopoisk ID, P4947 the TMDB movie ID, P4983 the TMDB series ID.
 async function runQuery(query: string, signal: AbortSignal): Promise<Row[]> {
-  const response = await fetch('https://query.wikidata.org/sparql', {
-    method: 'POST',
-    headers: { Accept: 'application/sparql-results+json' },
-    body: new URLSearchParams({ query }),
-    signal,
-  })
-  if (!response.ok) throw new Error(`Wikidata returned ${response.status}.`)
+  let response: Response
+  try {
+    response = await fetch('https://query.wikidata.org/sparql', {
+      method: 'POST',
+      headers: { Accept: 'application/sparql-results+json' },
+      body: new URLSearchParams({ query }),
+      signal,
+    })
+  } catch (error) {
+    if (signal.aborted) throw error
+    throw new Error('Could not reach Wikidata. Check your connection, then try again.')
+  }
+  if (!response.ok) {
+    throw new Error(`Wikidata returned error ${response.status}. Try again later.`)
+  }
 
   const json: { results: { bindings: Row[] } } = await response.json()
   return json.results.bindings
