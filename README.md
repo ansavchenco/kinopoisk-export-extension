@@ -1,4 +1,4 @@
-# Kinopoisk export
+# Kinopoisk Export
 
 A browser extension that saves your Kinopoisk library to a JSON file. Kinopoisk has no export of its own, so the extension reads the same pages you see when signed in.
 

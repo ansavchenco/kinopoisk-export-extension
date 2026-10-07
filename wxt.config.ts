@@ -6,7 +6,7 @@ export default defineConfig({
   modules: ['@wxt-dev/module-solid'],
   vite: () => ({ plugins: [tailwindcss()] }),
   manifest: {
-    name: 'Kinopoisk export',
+    name: 'Kinopoisk Export',
     // With no popup, the manifest needs an empty `action` to show the toolbar icon.
     action: {},
     host_permissions: ['https://*.kinopoisk.ru/*', 'https://query.wikidata.org/*'],

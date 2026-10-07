@@ -23,7 +23,7 @@ type StepState = 'pending' | 'active' | 'done' | 'failed'
 
 const VIEW_TEXT: Record<View, { heading: string; lead: string }> = {
   ready: {
-    heading: 'Kinopoisk export',
+    heading: 'Kinopoisk Export',
     lead: 'Saves your library to a JSON file. Takes a few minutes.',
   },
   running: { heading: 'Exporting…', lead: 'Keep this panel open.' },

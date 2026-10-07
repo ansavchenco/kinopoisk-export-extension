@@ -1,8 +1,8 @@
-# Privacy Policy for Kinopoisk export
+# Privacy Policy for Kinopoisk Export
 
 Effective date: October 3, 2026
 
-Kinopoisk export is a browser extension that exports a user’s Kinopoisk ratings, watched titles, watch later list, and favorites to a JSON file.
+Kinopoisk Export is a browser extension that exports a user’s Kinopoisk ratings, watched titles, watch later list, and favorites to a JSON file.
 
 ## Data handled by the extension
 
@@ -47,11 +47,11 @@ The extension does not use Chrome storage for the exported library and does not 
 
 ## Sale and unrelated use of data
 
-Kinopoisk export does not sell user data.
+Kinopoisk Export does not sell user data.
 
 It does not use or transfer user data for purposes unrelated to its single purpose. It does not use or transfer user data to determine creditworthiness or for lending purposes.
 
-Kinopoisk export’s use and transfer of information obtained through browser permissions complies with the Chrome Web Store User Data Policy, including its Limited Use requirements.
+Kinopoisk Export’s use and transfer of information obtained through browser permissions complies with the Chrome Web Store User Data Policy, including its Limited Use requirements.
 
 ## User choices
 
